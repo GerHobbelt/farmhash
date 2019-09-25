@@ -21,10 +21,23 @@ project(farmhash)
 
     #adding the executable
     add_library(${PROJECT_NAME} STATIC ${SOURCE_FILES} ${INCLUDES_FILES})
-	#set(CMAKE_BINARY_DIR  )
-	#SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
-	SET(LIBRARY_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
-	#setting the plug-in folder in the solution
-	set_target_properties (${PROJECT_NAME} PROPERTIES
-    FOLDER vendors) 
+
+	if(APPLE)
+			MESSAGE(STATUS "Using MACOS")
+	elseif(UNIX)
+		set(LUA_DEFINITIONS LUA_USE_POSIX)
+		target_compile_definitions(${PROJECT_NAME} PUBLIC ${LUA_DEFINITIONS})
+	elseif(WIN32)
+		#copying built lib to the output
+		add_custom_command(
+		TARGET ${PROJECT_NAME} 
+		POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy
+		  $<TARGET_FILE:${PROJECT_NAME}>
+		  ${CMAKE_SOURCE_DIR}/../builtDependencies/windows/$<CONFIGURATION>/$<TARGET_FILE_NAME:${PROJECT_NAME}>)		
+	endif()
+
+	#copying the headers
+	file(MAKE_DIRECTORY ${CMAKE_SOURCE_DIR}/../builtDependencies/includes/farmhash)
+	file(COPY "src/farmhash.h" DESTINATION ${CMAKE_SOURCE_DIR}/../builtDependencies/includes/farmhash )
