@@ -21,7 +21,7 @@ it is processed by scripts.  Some of it is terribly hacky.  For
 example:
 
 0. Hash functions in a farmhash??.cc file that are meant to be called
-from farmhash.cc should not have "STATIC_INLINE" on their definiton,
+from farmhash.cc should not have "STATIC_INLINE" on their definition,
 and their definition should begin with a single line that includes the
 arg list and ends with "{".
 
@@ -43,4 +43,4 @@ the dependency graph is acyclic.
 before and/or after use, to reduce the chance of running into weird
 errors.  The code in farmhash??.cc will end up in ../src/farmhash.cc,
 not in a header file, so you don't have to worry too much about
-messing up macro defintions that later code will require.
+messing up macro definitions that later code will require.
